@@ -1,0 +1,139 @@
+---
+title: "Reproducible Report Template - Basic"
+author: "SID: 530325264"
+subtitle: "Project 3"
+date: "University of Sydney | DATA1001 | OCT 2023   "
+# You can change the title, subtitle, author etc.
+# if you do not want a subtitle, author, or date just delete or comment # the the line!
+output:
+  html_document:
+    fig_caption: yes
+    number_sections: yes
+    self_contained: yes
+    theme: flatly
+    # Other themes can be found at: https://bootswatch.com/
+    css: 
+      - https://use.fontawesome.com/releases/v5.0.6/css/all.css
+    #This will allow you to insert icons in your document, thanks to [Font Awesome](http://fontawesome.io).
+    #You will find an examples below.
+    # If you are knitting your document but not connected to the internet, place a "#" in front of the css line above with the font-awesome.min.css line to comment it out. This will let you knit the document in draft form until you connect again and knit the final. Note that when you do this some elements will be missing from the knitted slides. 
+    toc: true
+    #This adds a Table of Contents (toc).
+    toc_depth: 3
+    #This controls the number of subheadings included in the toc.
+    toc_float: true
+    #This allows toc to update relative to your location as you scroll down the html page.
+    code_folding: hide
+    #code_folding can be changed to "hide"" if you want the all your code to be collapsed when you open the document
+    
+    # More information: http://rmarkdown.rstudio.com/html_document_format.html
+---
+
+<br>
+
+# Client Bio & Recommendation
+
+## Client: Harvey's Furniture
+
+- Linked in: https://www.linkedin.com/company/harveys-furniture-store
+
+- Established nearly a century ago by Iris and J.M. Harvey, Harvey's is one of the oldest retail stores in the United Kingdom. 
+<br>
+
+## Recommendation
+
+- This data report recommends that Harvey's should open future branches in another country to expand its business and this data report gives suggestions and evidence for the best country it should open another store in. The country chosen is Germany due to the fact that online sales are very popular among customers from Germany. Therefore, it is best that if a new branch is to be made in another country, Germany would be the best option currently. Opening another branch of Harvey's Furniture in Germany will not only increase the number of items that will be sold which makes the company earn more profit, but also expands the business of Harvey's so it will be more known to the rest of the world as well as provide jobs and opportunities for the people in Germany to work with Harvey's and learn from this large enterprise.
+
+<br>
+
+
+# Evidence
+
+## Initial Data Analysis (IDA)
+
+- The data used came from an e-commerce business transaction data set from kaggle.com and has the data collected from the year 2018-2019. The data set contains over 530000 rows and a total of 8 columns. Each row represents an online transaction made by customers through the internet. The 8 columns are the transactionID which uniquely identifies each transaction, the date which is the date they did the transaction, the productNo which uniquely identifies each product sold, the product name, the price of the product, the quantity of the product bought, the customerID which uniquely identifies each customer and the country the customer is from. The data is valid because there are no invalid data inputted at the data set and no data that makes no sense.
+
+## Which country is the best location to open a new branch in?
+I first set the data set of countries to be a factor so that transactions coming from the same country can be easily grouped. The following graphs shows the relationship between the number of transactions coming from each country.
+
+```{r,warning=FALSE,message=FALSE}
+library(tidyverse)
+retail = read.csv("uk_retail.csv")
+retail$Country = as.factor(retail$Country)
+ggplot(retail,aes(x = Country, fill = Country)) + labs(title = "Number of transactions from each Country", x = "Countries", y = "Number of transactions") + geom_bar()
+```
+
+```{r}
+retail = read.csv("uk_retail.csv")
+retail$Country = as.factor(retail$Country)
+countries = c("Austria","Australia","Germany","Switzerland","France","USA","EIRE","Finland","Italy")
+chosen_countries = retail %>%
+  filter(Country %in% countries)
+ggplot(chosen_countries, aes(x = Country, fill = Country)) + labs(title = "Number of transactions from chosen Countries", x = "Countries", y = "Number of transactions") + geom_bar()
+```
+The first graph is for all the possible countries in the data set and the second graph is the relationship between the number of transaction coming from the few chosen countries. I took the countries with the tallest bars from the first graph and made another graph to compare with side-by-side as the number of transaction from the United Kingdom dominates the data set. We exclude United Kingdom as it is the place Harvey's originated from therefore it is not possible to put a branch there. From the second graph, we can conclude that Germany has the most number of transactions than other countries except United Kingdom. Therefore, the best location to start another branch of Harvey's is Germany.
+
+<br>
+
+## Is the mean quantity of products bought by people from United Kingdom and Germany the same?
+
+I filtered the data from the entire data set and only took the data from the countries United Kingdom and Germany in order to perform this hypothesis test. A welch two sample test is used and here are the results:
+
+```{r}
+sample = c("United Kingdom","Germany")
+HypTest = retail %>%
+  filter(Country %in% sample)
+t.test(Quantity ~ Country, data = HypTest)
+```
+From the data above, we can conclude that there is a difference in quantity of products bought by customers from the United Kingdom and Germany. Germany has a higher mean of quantity bought which gives more evidence to why Germany would be a good country to put another branch of Harvey's.
+
+
+
+# Acknowledgments
+
+Data source: https://www.kaggle.com/datasets/gabrielramos87/an-online-shop-business
+
+I used a word counter website to count if I have reached the required number of words: https://wordcounter.net/
+
+I read the guide for writing a nice report provided by the DATA1001 team.
+
+<br>
+
+
+# Appendix
+
+## Client Choice
+Harvey's is one of the more known retail companies from around the world. Harvey's have also branched to numerous different countries so they already have experience on how this process works. Though it will be quite costly, the benefits they can gain from this decision may greatly improve their business.
+
+## Statisitcal Analyses
+
+I used a bar graph as they are simpler to read and easier to understand. Bar graphs also represent the data side-by-side so it is easier to compare the sizes of the data and the bar with the greatest height can be easily identified. The data represented is a qualitative nominal data so a bar graph is good for representing the frequency of the data appearing in the data set.
+
+I used a t-test to test my hypothesis on whether the mean of quantity of products bought from UK and Germany are different. Here is the HATPC process(with a = 0.05):
+
+- H-Hypothesis:
+
+H0: The mean difference in quantity bought between the United Kingdom and Germany is 0.
+
+h1: The mean difference in quantity bought between the United Kingdom and Germany is not 0.
+
+- A-Assumptions:
+
+The data is independent from other variables.
+Each group has the same normality and variance.
+
+- T-Test Statistic:
+
+5.52
+
+- P-P-Value:
+
+3.394e-08
+
+- C-Conclusion:
+
+Since the p-value is less than 0.05, we reject the null hypothesis and conclude that there is a difference in mean of quantity between the two countries with 95% confidence rate.
+
+
+## Limitations
+The data set is taken from only a year's worth of data while Harvey's has been around for over 50 years. Therefore, the data for other years may be completely different from this one.
